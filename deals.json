@@ -1,0 +1,18 @@
+[
+    {
+        "store": "Whole Foods",
+        "item": "Organic Hass Avocados (4ct)",
+        "price": "$3.99",
+        "category": "Produce"
+    },
+    {
+        "store": "Target",
+        "item": "Good & Gather Organic Spinach",
+        "price": "$2.49",
+        "category": "Produce"
+    },
+    {
+        "store": "Woodman's",
+        "item": "Organic Hass Avocados (4ct)"
+    }
+]

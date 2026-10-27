@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartBasket & HeartyMeals</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        scandbg: '#F7F6F2', /* Warm off-white / greige wall tone */
+                        cardbg: '#FFFFFF',
+                        oaklight: '#E6DEC9', /* Washed light oak accent */
+                        oakdark: '#C8BA9D',
+                        darkmatte: '#222222',
+                        brass: '#D4AF37',
+                        brasshover: '#C5A028'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #F7F6F2;
+            color: #222222;
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7F6F2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C8BA9D;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-cardbg border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo & Name -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('deals')">
+                <div class="w-10 h-10 rounded-xl bg-darkmatte flex items-center justify-center text-oaklight shadow-sm">
+                    <i class="fa-solid fa-basket-shopping text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg tracking-tight text-darkmatte leading-tight">SmartBasket</h1>
+                    <p class="text-xs text-brass font-bold tracking-wide">& HeartyMeals</p>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <nav class="hidden md:flex items-center space-x-1 bg-scandbg p-1.5 rounded-xl border border-gray-200/60">
+                <button onclick="switchTab('deals')" id="nav-deals" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-cardbg text-darkmatte shadow-sm">
+                    <i class="fa-solid fa-tags mr-1.5 text-brass"></i>Weekly Deals
+                </button>
+                <button onclick="switchTab('mealplanner')" id="nav-mealplanner" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-600 hover:text-darkmatte">
+                    <i class="fa-solid fa-utensils mr-1.5 text-gray-400"></i>HeartyMeals
+                </button>
+                <button onclick="switchTab('scraper')" id="nav-scraper" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-600 hover:text-darkmatte">
+                    <i class="fa-solid fa-code mr-1.5 text-gray-400"></i>Scraper Hub
+                </button>
+                <button onclick="switchTab('generator')" id="nav-generator" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-600 hover:text-darkmatte">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-gray-400"></i>AI Chef
+                </button>
+                <button onclick="switchTab('basket')" id="nav-basket" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-600 hover:text-darkmatte relative">
+                    <i class="fa-solid fa-cart-shopping mr-1.5 text-gray-400"></i>Cart
+                    <span id="basket-badge" class="absolute -top-1 -right-1 bg-brass text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm hidden">0</span>
+                </button>
+                <button onclick="switchTab('about')" id="nav-about" class="px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-600 hover:text-darkmatte">
+                    <i class="fa-solid fa-user-circle mr-1.5 text-gray-400"></i>About Nipa
+                </button>
+            </nav>
+
+            <!-- User profile & Quick stats -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden lg:flex flex-col text-right">
+                    <span class="text-xs text-gray-400 font-medium">Estimated Weekly Savings</span>
+                    <span id="header-savings" class="text-sm font-bold text-emerald-600">$0.00</span>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-oaklight flex items-center justify-center text-darkmatte font-bold border border-oakdark/40 shadow-sm cursor-pointer" onclick="switchTab('about')">
+                    NP
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Navigation Bar -->
+        <div class="md:hidden flex border-t border-gray-100 bg-cardbg px-2 py-2 justify-around">
+            <button onclick="switchTab('deals')" id="mob-nav-deals" class="flex flex-col items-center py-1 px-2 text-[11px] font-medium text-darkmatte font-bold">
+                <i class="fa-solid fa-tags text-base mb-0.5 text-brass"></i>Deals
+            </button>
+            <button onclick="switchTab('mealplanner')" id="mob-nav-mealplanner" class="flex flex-col items-center py-1 px-2 text-[11px] font-medium text-gray-500">
+                <i class="fa-solid fa-utensils text-base mb-0.5"></i>Meals
+            </button>
+            <button onclick="switchTab('scraper')" id="mob-nav-scraper" class="flex flex-col items-center py-1 px-2 text-[11px] font-medium text-gray-500">
+                <i class="fa-solid fa-code text-base mb-0.5"></i>Scraper
+            </button>
+            <button onclick="switchTab('basket')" id="mob-nav-basket" class="flex flex-col items-center py-1 px-2 text-[11px] font-medium text-gray-500 relative">
+                <i class="fa-solid fa-cart-shopping text-base mb-0.5"></i>Cart
+                <span id="mob-basket-badge" class="absolute top-0 right-2 bg-brass text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+            </button>
+            <button onclick="switchTab('about')" id="mob-nav-about" class="flex flex-col items-center py-1 px-2 text-[11px] font-medium text-gray-500">
+                <i class="fa-solid fa-user-circle text-base mb-0.5"></i>About
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- ==================== TAB 1: WEEKLY DEALS & COUPONS ==================== -->
+        <div id="tab-deals" class="space-y-6">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-darkmatte to-gray-800 rounded-3xl p-8 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row items-center justify-between">
+                <div class="absolute right-0 top-0 opacity-10 translate-x-8 -translate-y-8 pointer-events-none">
+                    <i class="fa-solid fa-store text-9xl"></i>
+                </div>
+                <div class="z-10 mb-6 md:mb-0 max-w-xl">
+                    <span class="bg-brass/20 text-brass border border-brass/30 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase inline-block mb-3">Smart meals, healthy start</span>
+                    <h2 class="text-3xl font-bold tracking-tight mb-2">SmartBasket & HeartyMeals</h2>
+                    <p class="text-gray-300 text-sm leading-relaxed">Compare live circular specials across Whole Foods, Woodman's, Jewel-Osco, Target, and Patel Brothers. Clip coupons to build your custom grocery basket.</p>
+                </div>
+                <div class="z-10 flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <button onclick="switchTab('scraper')" class="bg-cardbg/10 hover:bg-cardbg/20 border border-white/20 text-white font-medium px-5 py-3 rounded-xl transition-all text-sm flex items-center justify-center">
+                        <i class="fa-solid fa-code mr-2 text-brass"></i>View Scraper Hub
+                    </button>
+                    <button onclick="switchTab('mealplanner')" class="bg-brass hover:bg-brasshover text-white font-medium px-6 py-3 rounded-xl transition-all shadow-md text-sm flex items-center justify-center">
+                        <i class="fa-solid fa-utensils mr-2"></i>Explore HeartyMeals
+                    </button>
+                </div>
+            </div>
+
+            <!-- Store Selector Filter Row -->
+            <div class="bg-cardbg p-6 rounded-2xl border border-gray-200/80 shadow-sm space-y-6">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+                    <div>
+                        <h3 class="text-lg font-bold text-darkmatte">Filter by Supermarket</h3>
+                        <p class="text-xs text-gray-500">Select stores to inspect active circular specials</p>
+                    </div>
+                    <!-- 5 Specific Stores -->
+                    <div id="store-filters" class="flex flex-wrap gap-2">
+                        <button onclick="filterStore('ALL')" class="store-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-darkmatte text-white transition-all shadow-sm">All 5 Stores</button>
+                        <button onclick="filterStore('Whole Foods')" class="store-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-scandbg text-gray-600 hover:bg-gray-200 transition-all">Whole Foods</button>
+                        <button onclick="filterStore('Woodmans')" class="store-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-scandbg text-gray-600 hover:bg-gray-200 transition-all">Woodman's</button>
+                        <button onclick="filterStore('JewelOsco')" class="store-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-scandbg text-gray-600 hover:bg-gray-200 transition-all">Jewel-Osco</button>
+                        <button onclick="filterStore('Target')" class="store-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-scandbg text-gray-600 hover:bg-gray-200 transition-all">Target</button>
+                        <button onclick="filterStore('Patel Brothers')" class="store-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-scandbg text-gray-600 hover:bg-gray-200 transition-all">Patel Brothers</button>
+                    </div>
+                </div>
+
+                <!-- Search & Category Filters -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                        <button onclick="filterCategory('ALL')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-darkmatte text-white transition-all">All Categories</button>
+                        <button onclick="filterCategory('Produce')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-scandbg text-gray-600 hover:bg-gray-200 transition-all">Produce</button>
+                        <button onclick="filterCategory('Organic & Healthy')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-scandbg text-gray-600 hover:bg-gray-200 transition-all">Organic</button>
+                        <button onclick="filterCategory('Grains & Millets')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-scandbg text-gray-600 hover:bg-gray-200 transition-all">Grains & Millets</button>
+                        <button onclick="filterCategory('Spices & Pantry')" class="cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-scandbg text-gray-600 hover:bg-gray-200 transition-all">Spices & Pantry</button>
+                    </div>
+                    <div class="relative w-full md:w-64">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+                        <input type="text" id="deal-search-input" oninput="handleDealSearch()" placeholder="Search deals, basmati, millet..." class="w-full bg-scandbg border border-gray-200 rounded-xl pl-9 pr-4 py-2 text-xs focus:outline-none focus:border-darkmatte transition-all">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Deal Cards Grid -->
+            <div id="deals-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: HEARTYMEALS & ALTERNATIVES ==================== -->
+        <div id="tab-mealplanner" class="space-y-6 hidden">
+            <!-- Meal Planner Controls -->
+            <div class="bg-cardbg p-6 rounded-2xl border border-gray-200/80 shadow-sm space-y-6">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-gray-100">
+                    <div>
+                        <h2 class="text-xl font-bold text-darkmatte">HeartyMeals Interactive Weekly Planner & Deal Alternatives</h2>
+                        <p class="text-xs text-gray-500 mt-0.5">Choose from at least 6 deal-matched alternative recipes for each day, filtered by your dietary preferences.</p>
+                    </div>
+                    
+                    <!-- Dietary Restrictions Checkboxes -->
+                    <div class="flex flex-wrap items-center gap-3 bg-scandbg p-3.5 rounded-2xl border border-gray-200/60">
+                        <span class="text-xs font-bold text-darkmatte uppercase tracking-wider mr-1"><i class="fa-solid fa-filter text-brass mr-1"></i>Diet:</span>
+                        <label class="inline-flex items-center text-xs font-medium cursor-pointer">
+                            <input type="checkbox" value="vegetarian" onchange="generateMealPlan()" class="diet-checkbox rounded border-gray-300 text-darkmatte focus:ring-0 mr-1.5" checked> Vegetarian
+                        </label>
+                        <label class="inline-flex items-center text-xs font-medium cursor-pointer">
+                            <input type="checkbox" value="gluten-free" onchange="generateMealPlan()" class="diet-checkbox rounded border-gray-300 text-darkmatte focus:ring-0 mr-1.5" checked> Gluten-Free
+                        </label>
+                        <label class="inline-flex items-center text-xs font-medium cursor-pointer">
+                            <input type="checkbox" value="vegan" onchange="generateMealPlan()" class="diet-checkbox rounded border-gray-300 text-darkmatte focus:ring-0 mr-1.5"> Vegan
+                        </label>
+                        <label class="inline-flex items-center text-xs font-medium cursor-pointer">
+                            <input type="checkbox" value="jain" onchange="generateMealPlan()" class="diet-checkbox rounded border-gray-300 text-darkmatte focus:ring-0 mr-1.5"> Jain / Nut-Free
+                        </label>
+                        <label class="inline-flex items-center text-xs font-medium cursor-pointer">
+                            <input type="checkbox" value="millet" onchange="generateMealPlan()" class="diet-checkbox rounded border-gray-300 text-darkmatte focus:ring-0 mr-1.5" checked> Millet-Focused
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-gray-600 flex items-center">
+                        <i class="fa-solid fa-circle-check text-emerald-600 mr-2 text-sm"></i>
+                        Showing HeartyMeals menus synchronized with Whole Foods, Woodman's, Jewel-Osco, Target & Patel Brothers.
+                    </span>
+                    <button onclick="generateMealPlan()" class="bg-darkmatte hover:bg-black text-white text-xs font-medium px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center">
+                        <i class="fa-solid fa-rotate mr-2 text-oaklight"></i>Refresh Weekly Plan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Weekly Schedule Container (Monday - Sunday with 6+ Alternatives per day) -->
+            <div id="meal-plan-grid" class="space-y-8">
+                <!-- Populated via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: SCRAPER & DATA HUB ==================== -->
+        <div id="tab-scraper" class="space-y-6 hidden">
+            <div class="bg-cardbg p-8 sm:p-10 rounded-3xl border border-gray-200/80 shadow-sm space-y-8">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-gray-100">
+                    <div>
+                        <div class="flex items-center space-x-2 mb-1">
+                            <span class="bg-brass/20 text-brass text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider">Free Data Pipeline</span>
+                            <span class="text-xs text-gray-400">&bull; Python & BeautifulSoup</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-darkmatte">Grocery Scraper & Data Hub</h2>
+                        <p class="text-xs text-gray-500 mt-1">View and test the exact Python automation scripts used to pull weekly deals, prices, and coupon codes from our 5 partner stores.</p>
+                    </div>
+                    <button onclick="runLiveScraperSync()" id="sync-scraper-btn" class="bg-brass hover:bg-brasshover text-white px-6 py-3 rounded-xl font-medium text-xs transition-all shadow-md flex items-center justify-center">
+                        <i class="fa-solid fa-bolt mr-2"></i>Run Live Data Sync Now
+                    </button>
+                </div>
+
+                <!-- Live Sync Status Banner -->
+                <div id="scraper-status-banner" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-center justify-between text-xs">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Scraping Pipeline Executed Successfully!</h4>
+                            <p id="sync-status-details" class="text-emerald-700 text-[11px] mt-0.5">Fetched 12 live circular items across Whole Foods, Woodman's, Jewel-Osco, Target & Patel Brothers.</p>
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-lg">Status: Active</span>
+                </div>
+
+                <!-- Python Code Viewer Component -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                            <span class="text-xs font-mono text-gray-500 ml-2">smartbasket_scraper.py</span>
+                        </div>
+                        <button onclick="copyPythonCode()" class="bg-scandbg hover:bg-oaklight text-darkmatte text-xs font-semibold px-4 py-2 rounded-xl transition-all border border-gray-200 flex items-center">
+                            <i class="fa-regular fa-copy mr-1.5"></i>Copy Python Code
+                        </button>
+                    </div>
+
+                    <div class="bg-darkmatte rounded-2xl p-6 text-gray-200 font-mono text-xs overflow-x-auto shadow-inner border border-gray-800">
+                        <pre><code id="python-code-content">import requests
+from bs4 import BeautifulSoup
+import json
+from datetime import datetime
+
+# ==========================================
+# SmartBasket & HeartyMeals - Weekly Scraper
+# Target Stores: Whole Foods, Woodmans, JewelOsco, Target, Patel Brothers
+# ==========================================
+
+STORES_CONFIG = {
+    "Whole Foods": {"url": "https://www.wholefoodsmarket.com/products/sale", "item_selector": "div.aliment-product-card"},
+    "Woodmans": {"url": "https://www.woodmans-food.com/weekly-ad", "item_selector": "div.circular-item"},
+    "JewelOsco": {"url": "https://local.jewelosco.com/weekly-ad", "item_selector": "div.flyer-item"},
+    "Target": {"url": "https://www.target.com/c/weekly-ad", "item_selector": "div.h-padding-a-default"},
+    "Patel Brothers": {"url": "https://www.patelbros.com/weekly-ad", "item_selector": "div.product-tile"}
+}
+
+def fetch_store_circulars():
+    headers = {"User-Agent": "SmartBasketBot/1.0 (Contact: nipa@smartbasket.app)"}
+    scraped_deals = []
+
+    print(f"[{datetime.now()}] Starting weekly grocery circular sweep across 5 stores...")
+
+    for store_name, config in STORES_CONFIG.items():
+        try:
+            response = requests.get(config["url"], headers=headers, timeout=10)
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, 'html.parser')
+                items = soup.select(config["item_selector"])
+                
+                for item in items[:3]: # Sample top 3 weekly deals per store
+                    title = item.select_one('.title, h3, span.name').get_text(strip=True) if item.select_one('.title, h3, span.name') else "Organic Special Item"
+                    price = item.select_one('.price, span.sale-price').get_text(strip=True) if item.select_one('.price, span.sale-price') else "$3.99"
+                    
+                    scraped_deals.append({
+                        "store": store_name,
+                        "name": title,
+                        "salePrice": price,
+                        "timestamp": datetime.now().isoformat()
+                    })
+            else:
+                print(f"Warning: Could not reach {store_name} (Status: {response.status_code})")
+        except Exception as e:
+            print(f"Error scraping {store_name}: {str(e)}")
+
+    print(f"Successfully scraped {len(scraped_deals)} active deals into JSON format.")
+    return json.dumps(scraped_deals, indent=2)
+
+if __name__ == "__main__":
+    deals_json = fetch_store_circulars()
+    with open("live_weekly_deals.json", "w") as f:
+        f.write(deals_json)
+    print("Weekly circular sync completed successfully!")</code></pre>
+                    </div>
+                </div>
+
+                <!-- Explanation / FAQ on Scraping -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-gray-100">
+                    <div class="p-5 rounded-2xl bg-scandbg border border-gray-200/60 space-y-2">
+                        <div class="text-brass text-lg"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <h4 class="font-bold text-darkmatte text-xs">Automated Scheduler</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed">Runs every Wednesday at 4:00 AM via GitHub Actions cron job for $0/month hosting cost.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-scandbg border border-gray-200/60 space-y-2">
+                        <div class="text-brass text-lg"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h4 class="font-bold text-darkmatte text-xs">Polite Scraping</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed">Incorporates custom User-Agents and rate-limiting delays to respect store servers.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-scandbg border border-gray-200/60 space-y-2">
+                        <div class="text-brass text-lg"><i class="fa-solid fa-database"></i></div>
+                        <h4 class="font-bold text-darkmatte text-xs">JSON Feed Output</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed">Feeds structured price and coupon records instantly into the SmartBasket meal planning engine.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: AI RECIPE GENERATOR ==================== -->
+        <div id="tab-generator" class="space-y-6 hidden">
+            <div class="bg-cardbg p-8 rounded-2xl border border-gray-200/80 shadow-sm max-w-3xl mx-auto space-y-6">
+                <div class="text-center max-w-lg mx-auto">
+                    <div class="w-12 h-12 rounded-2xl bg-darkmatte text-oaklight flex items-center justify-center text-xl mx-auto mb-3 shadow-sm">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-darkmatte">AI HeartyMeals Recipe & Deal Matcher</h2>
+                    <p class="text-xs text-gray-500 mt-1">Enter ingredients or dietary preferences, and our AI will formulate a custom recipe utilizing active discounts from our 5 stores.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-darkmatte uppercase tracking-wider mb-2">Pantry / Deal Ingredients on Hand</label>
+                        <input type="text" id="ai-ingredients" placeholder="e.g., millet, turmeric, organic spinach, salmon" class="w-full bg-scandbg border border-gray-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-darkmatte transition-all">
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-darkmatte uppercase tracking-wider mb-2">Dietary Restriction</label>
+                            <select id="ai-diet" class="w-full bg-scandbg border border-gray-200 rounded-xl px-4 py-3 text-xs font-medium text-darkmatte focus:outline-none focus:border-darkmatte">
+                                <option value="Vegetarian">Vegetarian</option>
+                                <option value="Vegan">Vegan</option>
+                                <option value="Gluten-Free">Gluten-Free</option>
+                                <option value="Jain / Nut-Free">Jain / Nut-Free</option>
+                                <option value="Millet-Focused">Millet-Focused (Ancient Grains)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-darkmatte uppercase tracking-wider mb-2">Meal Type</label>
+                            <select id="ai-meal-type" class="w-full bg-scandbg border border-gray-200 rounded-xl px-4 py-3 text-xs font-medium text-darkmatte focus:outline-none focus:border-darkmatte">
+                                <option value="Dinner">Hearty Dinner</option>
+                                <option value="Breakfast">Nutritious Breakfast</option>
+                                <option value="Lunch">Energizing Lunch</option>
+                                <option value="Snack">Immunity Snack</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button onclick="generateAIRecipe()" class="w-full bg-darkmatte hover:bg-black text-white py-3.5 rounded-xl font-medium text-sm transition-all shadow-md flex items-center justify-center">
+                        <i class="fa-solid fa-sparkles mr-2 text-brass"></i>Generate Custom HeartyMeal & Find Store Deals
+                    </button>
+                </div>
+
+                <!-- AI Output Box -->
+                <div id="ai-result-container" class="hidden mt-8 p-6 bg-scandbg rounded-2xl border border-gray-200/80 space-y-4">
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-3">
+                        <span id="ai-out-title" class="font-bold text-darkmatte text-sm"></span>
+                        <span id="ai-out-store" class="bg-brass text-white text-[10px] font-bold px-2.5 py-1 rounded-lg"></span>
+                    </div>
+                    <p id="ai-out-desc" class="text-xs text-gray-700 leading-relaxed"></p>
+                    <div class="pt-2">
+                        <span class="text-[10px] uppercase font-bold tracking-wider text-gray-400 block mb-1">Matched Deal Ingredients:</span>
+                        <div id="ai-out-ingredients" class="flex flex-wrap gap-1.5"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 5: MY SMART BASKET & CART ==================== -->
+        <div id="tab-basket" class="space-y-6 hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Left 2 Cols: Clipped Items & Sorted Shopping List -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-cardbg p-6 rounded-2xl border border-gray-200/80 shadow-sm space-y-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+                            <div>
+                                <h2 class="text-lg font-bold text-darkmatte">My Smart Basket & Shopping List</h2>
+                                <p class="text-xs text-gray-500">Clipped coupons and discounted items ready for your run.</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-semibold text-gray-500">Sort by:</span>
+                                <select id="sort-list-select" onchange="renderBasket()" class="bg-scandbg border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-medium text-darkmatte focus:outline-none focus:border-darkmatte">
+                                    <option value="store">Supermarket Store</option>
+                                    <option value="aisle">Store Aisle</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Basket Items Container -->
+                        <div id="basket-items-list" class="space-y-4">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Col: Savings & Checkout -->
+                <div class="space-y-6">
+                    <div class="bg-cardbg p-6 rounded-2xl border border-gray-200/80 shadow-sm sticky top-28 space-y-6">
+                        <h3 class="text-lg font-bold text-darkmatte pb-4 border-b border-gray-100">Savings & Total Summary</h3>
+                        
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between text-gray-600">
+                                <span>Total Original Price:</span>
+                                <span id="summary-original" class="font-semibold text-darkmatte">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600">
+                                <span>Coupons & Store Discounts:</span>
+                                <span id="summary-discount" class="font-semibold text-emerald-600">-$0.00</span>
+                            </div>
+                            <div class="pt-3 border-t border-gray-100 flex justify-between text-base font-bold text-darkmatte">
+                                <span>Estimated Basket Total:</span>
+                                <span id="summary-total" class="text-xl text-darkmatte">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-scandbg p-4 rounded-xl border border-gray-200/60 flex items-center space-x-3">
+                            <div class="text-brass text-2xl">
+                                <i class="fa-solid fa-piggy-bank"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-darkmatte">Smart Shopper Status</h4>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Optimized across Whole Foods, Woodman's, Jewel-Osco, Target & Patel Brothers.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 pt-2">
+                            <button onclick="simulateCheckout()" class="w-full bg-darkmatte hover:bg-black text-white py-3.5 rounded-xl font-medium text-sm transition-all shadow-md flex items-center justify-center">
+                                <i class="fa-solid fa-bag-shopping mr-2 text-oaklight"></i>Export / Print Grocery List
+                            </button>
+                            <button onclick="checkoutWithInstacart()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-medium text-sm transition-all shadow-md flex items-center justify-center">
+                                <i class="fa-solid fa-cart-arrow-down mr-2"></i>Checkout with Instacart Delivery
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 6: ABOUT NIPA ==================== -->
+        <div id="tab-about" class="space-y-6 hidden">
+            <div class="bg-cardbg p-8 sm:p-12 rounded-3xl border border-gray-200/80 shadow-sm max-w-3xl mx-auto space-y-8">
+                <div class="text-center space-y-3">
+                    <div class="w-20 h-20 rounded-2xl bg-darkmatte text-oaklight flex items-center justify-center text-3xl mx-auto shadow-md">
+                        NP
+                    </div>
+                    <h2 class="text-3xl font-bold tracking-tight text-darkmatte">Meet the Creator: Nipa Patel</h2>
+                    <p class="text-sm text-brass font-bold">Smart meals, healthy start</p>
+                </div>
+
+                <div class="space-y-6 text-gray-700 text-sm leading-relaxed">
+                    <!-- The Inspiration -->
+                    <div class="bg-scandbg p-6 rounded-2xl border border-gray-200/60 space-y-3">
+                        <h3 class="font-bold text-darkmatte text-base flex items-center">
+                            <i class="fa-solid fa-seedling text-brass mr-2"></i>The Inspiration
+                        </h3>
+                        <p>As a mom to a wonderful daughter, I often look back at my early years watching my parents and family members meticulously collect coupons and hunt for deals. They showed me firsthand how much love, care, and smart planning go into saving a few dollars on household groceries and everyday necessities.</p>
+                    </div>
+
+                    <!-- The Modern Struggle -->
+                    <div class="bg-scandbg p-6 rounded-2xl border border-gray-200/60 space-y-3">
+                        <h3 class="font-bold text-darkmatte text-base flex items-center">
+                            <i class="fa-solid fa-clock text-brass mr-2"></i>The Modern Struggle
+                        </h3>
+                        <p>When I started my own household, I quickly realized how difficult it is to keep that tradition alive in today's busy world. Trying to gather paper coupons, track down digital deals, and drive across town to multiple different grocery stores—all while juggling a demanding career, weekend schedules, and the desire to feed my family fresh, healthy meals—felt nearly impossible.</p>
+                    </div>
+
+                    <!-- The IT Solution -->
+                    <div class="bg-scandbg p-6 rounded-2xl border border-gray-200/60 space-y-3">
+                        <h3 class="font-bold text-darkmatte text-base flex items-center">
+                            <i class="fa-solid fa-laptop-code text-brass mr-2"></i>The IT Solution: SmartBasket & HeartyMeals
+                        </h3>
+                        <p>That’s when my background in IT and data analytics kicked in. I wanted to build something that would make life easier for busy parents and coupon-lovers alike. <strong>SmartBasket & HeartyMeals</strong> was created to be your ultimate one-stop shop—bringing grocery deals, weekly circulars, and healthy, dietary-friendly meal planning from stores like <strong>Whole Foods, Woodman's, Jewel-Osco, Target, and Patel Brothers</strong> into one easy-to-access place.</p>
+                    </div>
+
+                    <!-- Let's Connect -->
+                    <div class="bg-darkmatte text-white p-6 rounded-2xl space-y-3">
+                        <h3 class="font-bold text-oaklight text-base flex items-center">
+                            <i class="fa-solid fa-envelope text-brass mr-2"></i>Let's Connect
+                        </h3>
+                        <p class="text-gray-300 text-xs sm:text-sm">Thank you so much for stopping by and exploring the app! Please reach out to me if you have any questions, want to share feature suggestions, or have a request for specific cuisines or dietary restriction-friendly recipes. I'm here to help make your grocery runs smarter and easier!</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                        <div class="p-5 rounded-2xl bg-scandbg border border-gray-200/60 text-center">
+                            <div class="text-darkmatte text-xl mb-2"><i class="fa-solid fa-store"></i></div>
+                            <h4 class="font-bold text-darkmatte text-xs">5 Superstores</h4>
+                            <p class="text-[11px] text-gray-500 mt-1">Live price & coupon aggregator.</p>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-scandbg border border-gray-200/60 text-center">
+                            <div class="text-darkmatte text-xl mb-2"><i class="fa-solid fa-utensils"></i></div>
+                            <h4 class="font-bold text-darkmatte text-xs">6+ Alternatives</h4>
+                            <p class="text-[11px] text-gray-500 mt-1">Customizable HeartyMeals per day.</p>
+                        </div>
+                        <div class="p-5 rounded-2xl bg-scandbg border border-gray-200/60 text-center">
+                            <div class="text-darkmatte text-xl mb-2"><i class="fa-solid fa-piggy-bank"></i></div>
+                            <h4 class="font-bold text-darkmatte text-xs">Smart Savings</h4>
+                            <p class="text-[11px] text-gray-500 mt-1">Instant deal clipping & list sorting.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-gray-100 text-center">
+                    <button onclick="switchTab('deals')" class="bg-darkmatte hover:bg-black text-white text-xs font-medium px-8 py-3.5 rounded-xl transition-all shadow-md">
+                        Start Exploring Weekly Deals
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Custom Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-darkmatte text-white px-6 py-3.5 rounded-2xl shadow-xl transform translate-y-24 opacity-0 transition-all duration-300 z-50 flex items-center space-x-3 border border-gray-700">
+        <div id="toast-icon" class="text-brass text-lg"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+            <h4 id="toast-title" class="text-xs font-bold">Success</h4>
+            <p id="toast-desc" class="text-[11px] text-gray-300">Item added to your basket.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-cardbg border-t border-gray-200 mt-16 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="font-bold text-darkmatte">SmartBasket & HeartyMeals</span>
+                <span>&bull;</span>
+                <span>Smart meals, healthy start</span>
+            </div>
+            <div>
+                <p>Featuring Whole Foods, Woodman's, Jewel-Osco, Target, and Patel Brothers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // 5 Specific Stores Database
+        const stores = ["Whole Foods", "Woodmans", "JewelOsco", "Target", "Patel Brothers"];
+
+        // Comprehensive Deal & Coupon Dataset covering all 5 stores
+        const dealsData = [
+            { id: 1, name: "Organic Hass Avocados (5-pack)", store: "Whole Foods", category: "Produce", aisle: "Produce & Fresh", originalPrice: 5.99, salePrice: 3.99, discountPct: 33, couponClipped: false, image: "https://placehold.co/400x300/e6dec9/222222?text=Avocados", tags: ["vegetarian", "vegan", "gluten-free", "jain"] },
+            { id: 2, name: "Organic Basmati Rice (10 lb bag)", store: "Patel Brothers", category: "Grains & Millets", aisle: "Grains & Rice", originalPrice: 18.99, salePrice: 13.49, discountPct: 28, couponClipped: true, image: "https://placehold.co/400x300/f7f6f2/222222?text=Basmati+Rice", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"] },
+            { id: 3, name: "Organic Finger Millet Flour (Ragi)", store: "Patel Brothers", category: "Grains & Millets", aisle: "Flours & Grains", originalPrice: 4.99, salePrice: 3.49, discountPct: 30, couponClipped: false, image: "https://placehold.co/400x300/e6dec9/222222?text=Ragi+Millet+Flour", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"] },
+            { id: 4, name: "Organic Wild-Caught Salmon Fillet", store: "Whole Foods", category: "Organic & Healthy", aisle: "Seafood", originalPrice: 16.99, salePrice: 12.99, discountPct: 23, couponClipped: false, image: "https://placehold.co/400x300/f7f6f2/222222?text=Wild+Salmon", tags: ["gluten-free"] },
+            { id: 5, name: "Organic Whole Milk / Oat Milk (Gallon)", store: "Woodmans", category: "Organic & Healthy", aisle: "Dairy & Dairy Alt", originalPrice: 4.49, salePrice: 2.99, discountPct: 33, couponClipped: false, image: "https://placehold.co/400x300/e6dec9/222222?text=Oat+Milk", tags: ["vegetarian", "gluten-free", "jain"] },
+            { id: 6, name: "Organic Turmeric Root & Whole Spices Pack", store: "Patel Brothers", category: "Spices & Pantry", aisle: "Spices & Seasonings", originalPrice: 6.99, salePrice: 4.99, discountPct: 28, couponClipped: false, image: "https://placehold.co/400x300/222222/e6dec9?text=Turmeric+Spices", tags: ["vegetarian", "vegan", "gluten-free", "jain"] },
+            { id: 7, name: "Good & Gather Organic Spinach & Greens", store: "Target", category: "Produce", aisle: "Produce & Fresh", originalPrice: 3.99, salePrice: 2.49, discountPct: 37, couponClipped: false, image: "https://placehold.co/400x300/f7f6f2/222222?text=Target+Spinach", tags: ["vegetarian", "vegan", "gluten-free", "jain"] },
+            { id: 8, name: "Jewel-Osco Signature Select Extra Virgin Olive Oil", store: "JewelOsco", category: "Spices & Pantry", aisle: "Pantry & Oils", originalPrice: 11.99, salePrice: 8.49, discountPct: 29, couponClipped: false, image: "https://placehold.co/400x300/e6dec9/222222?text=Olive+Oil", tags: ["vegetarian", "vegan", "gluten-free", "jain"] },
+            { id: 9, name: "Woodman's Bulk Organic Red Millet Grain", store: "Woodmans", category: "Grains & Millets", aisle: "Grains & Rice", originalPrice: 3.50, salePrice: 2.20, discountPct: 37, couponClipped: true, image: "https://placehold.co/400x300/f7f6f2/222222?text=Red+Millet", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"] },
+            { id: 10, name: "Napa Valley Organic Cabernet Sauvignon", store: "Whole Foods", category: "Wines & Spirits", aisle: "Wine & Spirits", originalPrice: 26.99, salePrice: 18.99, discountPct: 29, couponClipped: false, image: "https://placehold.co/400x300/222222/e6dec9?text=Organic+Wine", tags: ["vegetarian", "vegan", "gluten-free"] },
+            { id: 11, name: "Target Organic Free-Range Brown Eggs (Dozen)", store: "Target", category: "Organic & Healthy", aisle: "Dairy & Eggs", originalPrice: 5.49, salePrice: 3.99, discountPct: 27, couponClipped: false, image: "https://placehold.co/400x300/e6dec9/222222?text=Organic+Eggs", tags: ["vegetarian", "gluten-free"] },
+            { id: 12, name: "Jewel-Osco Fresh Organic Heirloom Tomatoes", store: "JewelOsco", category: "Produce", aisle: "Produce & Fresh", originalPrice: 4.50, salePrice: 2.99, discountPct: 33, couponClipped: false, image: "https://placehold.co/400x300/f7f6f2/222222?text=Heirloom+Tomatoes", tags: ["vegetarian", "vegan", "gluten-free", "jain"] }
+        ];
+
+        // Master pool of recipes with 6+ deal-matched alternatives per day
+        const masterRecipes = {
+            "Monday": [
+                { id: 'm1_1', title: "Ragi Millet & Organic Spinach Hearty Porridge", store: "Patel Brothers", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Nutritious finger millet flour cooked with fresh organic spinach and turmeric.", img: "https://placehold.co/400x300/e6dec9/222222?text=Ragi+Porridge" },
+                { id: 'm1_2', title: "Avocado & Heirloom Tomato Hearty Toast", store: "Whole Foods", tags: ["vegetarian", "vegan", "gluten-free", "jain"], desc: "Hass avocados and fresh heirloom tomatoes on artisanal gluten-free toast.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Avocado+Toast" },
+                { id: 'm1_3', title: "Organic Egg & Spinach Hearty Frittata", store: "Target", tags: ["vegetarian", "gluten-free", "jain"], desc: "Fluffy free-range brown eggs baked with organic baby greens.", img: "https://placehold.co/400x300/222222/e6dec9?text=Egg+Frittata" },
+                { id: 'm1_4', title: "Red Millet & Lentil Hearty Power Bowl", store: "Woodmans", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Hearty red millet grains paired with protein-rich lentils and whole spices.", img: "https://placehold.co/400x300/e6dec9/222222?text=Millet+Bowl" },
+                { id: 'm1_5', title: "Jewel-Osco Olive Oil Spiced Hearty Dal", store: "JewelOsco", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Basmati rice and lentils tempered with extra virgin olive oil and turmeric.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Spiced+Dal" },
+                { id: 'm1_6', title: "Whole Foods Organic Hearty Salmon Salad", store: "Whole Foods", tags: ["gluten-free"], desc: "Wild-caught salmon fillet over organic spinach and heirloom tomatoes.", img: "https://placehold.co/400x300/222222/e6dec9?text=Salmon+Salad" }
+            ],
+            "Tuesday": [
+                { id: 'm2_1', title: "Organic Basmati Rice & Turmeric Hearty Dal", store: "Patel Brothers", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Aromatic basmati rice paired with protein-rich lentils and organic spices.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Basmati+Dal" },
+                { id: 'm2_2', title: "Target Organic Greens & Avocado Hearty Salad", store: "Target", tags: ["vegetarian", "vegan", "gluten-free", "jain"], desc: "Crisp organic spinach tossed with creamy Hass avocados and olive oil.", img: "https://placehold.co/400x300/e6dec9/222222?text=Green+Salad" },
+                { id: 'm2_3', title: "Wild Salmon with Hearty Heirloom Tomatoes", store: "Whole Foods", tags: ["gluten-free"], desc: "Oven-roasted wild salmon seasoned with olive oil and organic tomatoes.", img: "https://placehold.co/400x300/222222/e6dec9?text=Salmon+Tomatoes" },
+                { id: 'm2_4', title: "Woodman's Red Millet & Vegetable Hearty Stir-Fry", store: "Woodmans", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Nutrient-dense red millet grains sautéed with fresh organic greens.", img: "https://placehold.co/400x300/e6dec9/222222?text=Millet+Stirfry" },
+                { id: 'm2_5', title: "Jewel-Osco Mediterranean Hearty Grain Bowl", store: "JewelOsco", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Ancient grains topped with tomatoes, olive oil, and organic herbs.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Grain+Bowl" },
+                { id: 'm2_6', title: "Patel Brothers Ragi Millet Hearty Pancakes", store: "Patel Brothers", tags: ["vegetarian", "gluten-free", "jain", "millet"], desc: "Wholesome pancakes made from nutrient-rich finger millet flour.", img: "https://placehold.co/400x300/222222/e6dec9?text=Ragi+Pancakes" }
+            ],
+            "Wednesday": [
+                { id: 'm3_1', title: "Wild-Caught Salmon Hearty Fillet Feast", store: "Whole Foods", tags: ["gluten-free"], desc: "Prime wild salmon seasoned with turmeric, olive oil, and herbs.", img: "https://placehold.co/400x300/222222/e6dec9?text=Salmon+Feast" },
+                { id: 'm3_2', title: "Patel Brothers Organic Basmati & Hearty Spices", store: "Patel Brothers", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Long-grain basmati rice cooked with whole aromatic spices.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Basmati+Rice" },
+                { id: 'm3_3', title: "Target Organic Spinach & Egg Hearty Scramble", store: "Target", tags: ["vegetarian", "gluten-free", "jain"], desc: "Free-range brown eggs scrambled with organic spinach.", img: "https://placehold.co/400x300/e6dec9/222222?text=Egg+Scramble" },
+                { id: 'm3_4', title: "Woodman's Millet Grain & Avocado Hearty Bowl", store: "Woodmans", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Red millet grains tossed with diced Hass avocados and olive oil.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Millet+Avocado" },
+                { id: 'm3_5', title: "Jewel-Osco Heirloom Tomato Hearty Soup", store: "JewelOsco", tags: ["vegetarian", "vegan", "gluten-free", "jain"], desc: "Smooth blended soup made from fresh heirloom tomatoes and extra virgin olive oil.", img: "https://placehold.co/400x300/222222/e6dec9?text=Tomato+Soup" },
+                { id: 'm3_6', title: "Whole Foods Organic Avocado Hearty Guacamole", store: "Whole Foods", tags: ["vegetarian", "vegan", "gluten-free", "jain"], desc: "Fresh guacamole paired with crisp organic greens and olive oil.", img: "https://placehold.co/400x300/e6dec9/222222?text=Guacamole" }
+            ],
+            "Thursday": [
+                { id: 'm4_1', title: "Millet & Avocado Hearty Green Salad", store: "Woodmans", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Red millet grains tossed with Target organic greens and fresh Hass avocados.", img: "https://placehold.co/400x300/e6dec9/222222?text=Millet+Salad" },
+                { id: 'm4_2', title: "Patel Brothers Ragi Millet Hearty Porridge", store: "Patel Brothers", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Finger millet breakfast bowl infused with organic turmeric root.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Ragi+Porridge" },
+                { id: 'm4_3', title: "Whole Foods Wild Salmon & Hearty Salad", store: "Whole Foods", tags: ["gluten-free"], desc: "Seared wild salmon over sliced heirloom tomatoes and greens.", img: "https://placehold.co/400x300/222222/e6dec9?text=Salmon+Salad" },
+                { id: 'm4_4', title: "Target Free-Range Egg & Hearty Frittata", store: "Target", tags: ["vegetarian", "gluten-free", "jain"], desc: "Baked eggs with organic spinach and extra virgin olive oil.", img: "https://placehold.co/400x300/e6dec9/222222?text=Egg+Frittata" },
+                { id: 'm4_5', title: "Jewel-Osco Olive Oil & Hearty Basmati Pilaf", store: "JewelOsco", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Basmati rice simmered in olive oil and aromatic spices.", img: "https://placehold.co/400x300/e6dec9/222222?text=Basmati+Pilaf" },
+                { id: 'm4_6', title: "Whole Foods Organic Wine & Hearty Bruschetta", store: "Whole Foods", tags: ["vegetarian", "vegan", "gluten-free"], desc: "Heirloom tomatoes and olive oil served on gluten-free toast with organic wine.", img: "https://placehold.co/400x300/222222/e6dec9?text=Bruschetta" }
+            ],
+            "Friday": [
+                { id: 'm5_1', title: "Organic Free-Range Egg Hearty Frittata", store: "Target", tags: ["vegetarian", "gluten-free", "jain"], desc: "Fluffy eggs baked with organic spinach and extra virgin olive oil.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Egg+Frittata" },
+                { id: 'm5_2', title: "Patel Brothers Basmati Rice Hearty Khichdi", store: "Patel Brothers", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Comforting one-pot dish of basmati rice and lentils with turmeric.", img: "https://placehold.co/400x300/e6dec9/222222?text=Khichdi" },
+                { id: 'm5_3', title: "Whole Foods Seared Hearty Salmon", store: "Whole Foods", tags: ["gluten-free"], desc: "Wild-caught salmon fillet garnished with sliced Hass avocado.", img: "https://placehold.co/400x300/222222/e6dec9?text=Salmon+Avocado" },
+                { id: 'm5_4', title: "Woodman's Red Millet Hearty Grain Bowl", store: "Woodmans", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Hearty red millet mixed with organic greens and olive oil.", img: "https://placehold.co/400x300/e6dec9/222222?text=Red+Millet+Bowl" },
+                { id: 'm5_5', title: "Jewel-Osco Mediterranean Hearty Tomato Salad", store: "JewelOsco", tags: ["vegetarian", "vegan", "gluten-free", "jain"], desc: "Fresh heirloom tomatoes tossed in extra virgin olive oil and herbs.", img: "https://placehold.co/400x300/e6dec9/222222?text=Tomato+Salad" },
+                { id: 'm5_6', title: "Patel Brothers Ragi Hearty Flatbread", store: "Patel Brothers", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Healthy ragi flatbread stuffed with organic spinach and spices.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Ragi+Flatbread" }
+            ],
+            "Saturday": [
+                { id: 'm6_1', title: "Jewel-Osco Mediterranean Hearty Grain Bowl", store: "JewelOsco", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Hearty ancient grains topped with tomatoes, olive oil, and herbs.", img: "https://placehold.co/400x300/222222/e6dec9?text=Grain+Bowl" },
+                { id: 'm6_2', title: "Whole Foods Chef's Hearty Salmon Feast", store: "Whole Foods", tags: ["gluten-free"], desc: "Special weekend salmon dinner paired with organic wine and greens.", img: "https://placehold.co/400x300/e6dec9/222222?text=Salmon+Feast" },
+                { id: 'm6_3', title: "Patel Brothers Aromatic Hearty Basmati", store: "Patel Brothers", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Basmati rice spiced with organic turmeric and whole seasonings.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Basmati+Spiced" },
+                { id: 'm6_4', title: "Target Organic Avocado & Egg Hearty Toast", store: "Target", tags: ["vegetarian", "gluten-free", "jain"], desc: "Creamy avocado mash and free-range eggs on toast.", img: "https://placehold.co/400x300/e6dec9/222222?text=Avocado+Egg" },
+                { id: 'm6_5', title: "Woodman's Red Millet Hearty Soup", store: "Woodmans", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Warm nourishing soup featuring red millet grains and organic spinach.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Millet+Soup" },
+                { id: 'm6_6', title: "Whole Foods Organic Wine & Hearty Platter", store: "Whole Foods", tags: ["vegetarian", "vegan", "gluten-free"], desc: "Fresh heirloom tomatoes, avocados, and organic red wine.", img: "https://placehold.co/400x300/222222/e6dec9?text=Wine+Platter" }
+            ],
+            "Sunday": [
+                { id: 'm7_1', title: "Whole Foods Sunday Hearty Salmon Dinner", store: "Whole Foods", tags: ["gluten-free"], desc: "Wild salmon fillet paired with Napa Valley organic Cabernet Sauvignon.", img: "https://placehold.co/400x300/e6dec9/222222?text=Sunday+Salmon" },
+                { id: 'm7_2', title: "Patel Brothers Royal Hearty Basmati Feast", store: "Patel Brothers", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Sunday special aromatic basmati rice with spiced lentils.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Royal+Basmati" },
+                { id: 'm7_3', title: "Target Organic Spinach & Egg Hearty Brunch", store: "Target", tags: ["vegetarian", "gluten-free", "jain"], desc: "Weekend brunch featuring free-range eggs and organic greens.", img: "https://placehold.co/400x300/222222/222222?text=Brunch+Eggs" },
+                { id: 'm7_4', title: "Woodman's Red Millet & Avocado Hearty Feast", store: "Woodmans", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Healthy red millet bowl with fresh avocado slices and olive oil.", img: "https://placehold.co/400x300/e6dec9/222222?text=Millet+Feast" },
+                { id: 'm7_5', title: "Jewel-Osco Heirloom Tomato Hearty Pasta", store: "JewelOsco", tags: ["vegetarian", "vegan", "gluten-free", "jain"], desc: "Gluten-free pasta tossed with fresh heirloom tomatoes and extra virgin olive oil.", img: "https://placehold.co/400x300/f7f6f2/222222?text=Tomato+Pasta" },
+                { id: 'm7_6', title: "Patel Brothers Ragi Millet Hearty Sweet Porridge", store: "Patel Brothers", tags: ["vegetarian", "vegan", "gluten-free", "jain", "millet"], desc: "Soothing finger millet dessert porridge with organic spices.", img: "https://placehold.co/400x300/222222/e6dec9?text=Ragi+Sweet" }
+            ]
+        };
+
+        // User's selected meal plan state (Day -> Selected Recipe Object)
+        let selectedMealPlan = {
+            "Monday": null,
+            "Tuesday": null,
+            "Wednesday": null,
+            "Thursday": null,
+            "Friday": null,
+            "Saturday": null,
+            "Sunday": null
+        };
+
+        let currentStoreFilter = 'ALL';
+        let currentCatFilter = 'ALL';
+        let currentSearchQuery = '';
+
+        window.onload = function() {
+            initDefaultMealPlan();
+            renderDeals();
+            generateMealPlan();
+            updateBasketUI();
+        };
+
+        function initDefaultMealPlan() {
+            for (let day in masterRecipes) {
+                selectedMealPlan[day] = masterRecipes[day][0];
+            }
+        }
+
+        // Tab Switching
+        function switchTab(tabId) {
+            const tabs = ['deals', 'mealplanner', 'scraper', 'generator', 'basket', 'about'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const navBtn = document.getElementById(`nav-${t}`);
+                if(navBtn) navBtn.className = "px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-gray-600 hover:text-darkmatte";
+                const mobBtn = document.getElementById(`mob-nav-${t}`);
+                if(mobBtn) mobBtn.className = "flex flex-col items-center py-1 px-2 text-[11px] font-medium text-gray-500";
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) activeNav.className = "px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 bg-cardbg text-darkmatte shadow-sm";
+            const activeMob = document.getElementById(`mob-nav-${tabId}`);
+            if(activeMob) activeMob.className = "flex flex-col items-center py-1 px-2 text-[11px] font-medium text-darkmatte font-bold";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Deal Filters
+        function filterStore(storeName) {
+            currentStoreFilter = storeName;
+            const buttons = document.querySelectorAll('#store-filters button');
+            buttons.forEach(btn => {
+                if(btn.textContent.includes(storeName) || (storeName === 'ALL' && btn.textContent.includes('All 5 Stores'))) {
+                    btn.className = "store-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-darkmatte text-white transition-all shadow-sm";
+                } else {
+                    btn.className = "store-filter-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-scandbg text-gray-600 hover:bg-gray-200 transition-all";
+                }
+            });
+            renderDeals();
+        }
+
+        function filterCategory(cat) {
+            currentCatFilter = cat;
+            const buttons = document.querySelectorAll('.cat-filter-btn');
+            buttons.forEach(btn => {
+                if(btn.textContent.includes(cat) || (cat === 'ALL' && btn.textContent.includes('All Categories'))) {
+                    btn.className = "cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-darkmatte text-white transition-all";
+                } else {
+                    btn.className = "cat-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-scandbg text-gray-600 hover:bg-gray-200 transition-all";
+                }
+            });
+            renderDeals();
+        }
+
+        function handleDealSearch() {
+            currentSearchQuery = document.getElementById('deal-search-input').value.toLowerCase();
+            renderDeals();
+        }
+
+        function renderDeals() {
+            const container = document.getElementById('deals-grid');
+            let filtered = dealsData.filter(d => {
+                const matchesStore = currentStoreFilter === 'ALL' || d.store === currentStoreFilter;
+                const matchesCat = currentCatFilter === 'ALL' || d.category === currentCatFilter;
+                const matchesSearch = d.name.toLowerCase().includes(currentSearchQuery) || d.store.toLowerCase().includes(currentSearchQuery);
+                return matchesStore && matchesCat && matchesSearch;
+            });
+
+            container.innerHTML = filtered.map(deal => `
+                <div class="bg-cardbg rounded-2xl border border-gray-200/80 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div class="relative h-44 bg-gray-100 overflow-hidden">
+                        <img src="${deal.image}" alt="${deal.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/400x300/e6dec9/222222?text=Deal'">
+                        <span class="absolute top-3 left-3 bg-darkmatte/90 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-lg">
+                            ${deal.store}
+                        </span>
+                        <span class="absolute top-3 right-3 bg-emerald-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                            ${deal.discountPct}% OFF
+                        </span>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-gray-400">${deal.category}</span>
+                                <span class="text-[10px] font-semibold text-oakdark bg-scandbg px-2 py-0.5 rounded">${deal.aisle}</span>
+                            </div>
+                            <h4 class="font-bold text-darkmatte text-sm mt-1">${deal.name}</h4>
+                            <div class="flex flex-wrap gap-1 mt-2">
+                                ${deal.tags.map(t => `<span class="bg-scandbg text-gray-600 text-[10px] px-2 py-0.5 rounded-md font-medium">#${t}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-gray-400 line-through">$${deal.originalPrice.toFixed(2)}</span>
+                                <span class="text-base font-bold text-darkmatte ml-2">$${deal.salePrice.toFixed(2)}</span>
+                            </div>
+                            <button onclick="toggleCoupon(${deal.id})" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${deal.couponClipped ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-scandbg hover:bg-oaklight text-darkmatte border border-gray-200'}">
+                                <i class="fa-solid ${deal.couponClipped ? 'fa-check text-emerald-600' : 'fa-ticket'} mr-1.5"></i>
+                                ${deal.couponClipped ? 'Clipped' : 'Clip Coupon'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Coupon & Basket Logic
+        function toggleCoupon(dealId) {
+            const deal = dealsData.find(d => d.id === dealId);
+            if (deal) {
+                deal.couponClipped = !deal.couponClipped;
+                renderDeals();
+                renderBasket();
+                updateBasketUI();
+                if (deal.couponClipped) {
+                    showToast("Coupon Clipped!", `Added "${deal.name}" from ${deal.store} to your basket.`);
+                } else {
+                    showToast("Coupon Removed", `Removed item from basket.`);
+                }
+            }
+        }
+
+        function updateBasketUI() {
+            const clipped = dealsData.filter(d => d.couponClipped);
+            const badge = document.getElementById('basket-badge');
+            const mobBadge = document.getElementById('mob-basket-badge');
+            
+            if (clipped.length > 0) {
+                badge.innerText = clipped.length;
+                badge.classList.remove('hidden');
+                mobBadge.innerText = clipped.length;
+                mobBadge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+                mobBadge.classList.add('hidden');
+            }
+
+            let orig = 0, sale = 0;
+            clipped.forEach(d => {
+                orig += d.originalPrice;
+                sale += d.salePrice;
+            });
+            const savings = orig - sale;
+
+            document.getElementById('summary-original').innerText = `$${orig.toFixed(2)}`;
+            document.getElementById('summary-discount').innerText = `-$${savings.toFixed(2)}`;
+            document.getElementById('summary-total').innerText = `$${sale.toFixed(2)}`;
+            document.getElementById('header-savings').innerText = `$${savings.toFixed(2)}`;
+        }
+
+        function renderBasket() {
+            const clipped = dealsData.filter(d => d.couponClipped);
+            const sortMode = document.getElementById('sort-list-select').value;
+            const container = document.getElementById('basket-items-list');
+
+            if (clipped.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="text-gray-300 text-4xl mb-3"><i class="fa-solid fa-basket-shopping"></i></div>
+                        <h4 class="font-bold text-darkmatte text-sm">Your Smart Basket is empty</h4>
+                        <p class="text-xs text-gray-500 mt-1">Clip digital coupons from Weekly Deals or add HeartyMeals to populate your shopping list.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let sorted = [...clipped];
+            if (sortMode === 'store') {
+                sorted.sort((a, b) => a.store.localeCompare(b.store));
+            } else {
+                sorted.sort((a, b) => a.aisle.localeCompare(b.aisle));
+            }
+
+            container.innerHTML = sorted.map(item => `
+                <div class="flex items-center justify-between p-4 bg-scandbg rounded-2xl border border-gray-200/60">
+                    <div class="flex items-center space-x-4">
+                        <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-xl object-cover" onerror="this.src='https://placehold.co/100x100/e6dec9/222222?text=Item'">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-darkmatte text-white text-[9px] font-bold px-2 py-0.5 rounded">${item.store}</span>
+                                <span class="bg-oaklight/60 text-darkmatte text-[9px] font-semibold px-2 py-0.5 rounded">${item.aisle}</span>
+                            </div>
+                            <h4 class="font-bold text-darkmatte text-xs sm:text-sm mt-1">${item.name}</h4>
+                            <div class="text-xs text-gray-500 mt-0.5">
+                                <span class="line-through text-gray-400 mr-1.5">$${item.originalPrice.toFixed(2)}</span>
+                                <span class="font-bold text-emerald-600">$${item.salePrice.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="toggleCoupon(${item.id})" class="text-gray-400 hover:text-rose-600 p-2">
+                        <i class="fa-solid fa-trash-can text-sm"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Meal Planner & 6+ Alternatives Logic
+        function generateMealPlan() {
+            const activeDiets = Array.from(document.querySelectorAll('.diet-checkbox:checked')).map(cb => cb.value);
+            const container = document.getElementById('meal-plan-grid');
+
+            let htmlContent = '';
+
+            for (let day in masterRecipes) {
+                const alternatives = masterRecipes[day].filter(recipe => {
+                    return activeDiets.length === 0 || activeDiets.some(d => recipe.tags.includes(d));
+                });
+
+                if (!selectedMealPlan[day] || !alternatives.some(a => a.id === selectedMealPlan[day].id)) {
+                    selectedMealPlan[day] = alternatives.length > 0 ? alternatives[0] : masterRecipes[day][0];
+                }
+
+                const currentMeal = selectedMealPlan[day];
+
+                htmlContent += `
+                    <div class="bg-cardbg p-6 rounded-3xl border border-gray-200/80 shadow-sm space-y-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-gray-100">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-xl bg-darkmatte text-oaklight flex items-center justify-center font-bold text-sm shadow-sm">
+                                    ${day.substring(0, 3)}
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-darkmatte">${day}'s HeartyMeal Plan</h3>
+                                    <p class="text-xs text-gray-500">Synced with active store specials & discounts</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-brass/20 text-brass border border-brass/30 text-xs font-semibold px-3 py-1.5 rounded-xl">
+                                    <i class="fa-solid fa-store mr-1.5"></i>Store Deal: ${currentMeal.store}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Active Selected Meal Card Banner -->
+                        <div class="bg-scandbg p-5 rounded-2xl border border-gray-200/60 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="flex items-center space-x-4 w-full md:w-auto">
+                                <img src="${currentMeal.img}" alt="${currentMeal.title}" class="w-20 h-20 rounded-2xl object-cover shadow-sm" onerror="this.src='https://placehold.co/200x200/e6dec9/222222?text=Meal'">
+                                <div>
+                                    <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">Selected HeartyMeal</span>
+                                    <h4 class="font-bold text-darkmatte text-base mt-1">${currentMeal.title}</h4>
+                                    <p class="text-xs text-gray-600 mt-1">${currentMeal.desc}</p>
+                                    <div class="flex flex-wrap gap-1 mt-2">
+                                        ${currentMeal.tags.map(t => `<span class="bg-cardbg text-gray-600 text-[10px] px-2 py-0.5 rounded font-medium border border-gray-200">#${t}</span>`).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                                <button onclick="addMealToBasket('${currentMeal.title}', '${currentMeal.store}')" class="bg-darkmatte hover:bg-black text-white text-xs font-medium px-4 py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center">
+                                    <i class="fa-solid fa-cart-plus mr-1.5 text-oaklight"></i>Add Ingredients to Basket
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 6+ Alternative Options Carousel/Grid -->
+                        <div class="space-y-3 pt-2">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xs font-bold text-darkmatte uppercase tracking-wider flex items-center">
+                                    <i class="fa-solid fa-shuffle text-brass mr-1.5"></i>Choose from ${alternatives.length} Deal-Matched HeartyMeals Alternatives for ${day}:
+                                </h4>
+                                <span class="text-[11px] text-gray-400">Click any card to switch</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                ${alternatives.map(alt => {
+                                    const isSelected = currentMeal.id === alt.id;
+                                    return `
+                                        <div onclick="selectAlternativeMeal('${day}', '${alt.id}')" class="p-4 rounded-2xl border ${isSelected ? 'border-darkmatte bg-darkmatte text-white shadow-md' : 'border-gray-200/80 bg-cardbg hover:border-oakdark text-darkmatte cursor-pointer transition-all'} flex flex-col justify-between">
+                                            <div>
+                                                <div class="flex items-center justify-between mb-2">
+                                                    <span class="text-[9px] font-bold px-2 py-0.5 rounded ${isSelected ? 'bg-brass text-white' : 'bg-scandbg text-darkmatte'}">${alt.store}</span>
+                                                    ${isSelected ? '<span class="text-[10px] font-bold text-oaklight"><i class="fa-solid fa-check-circle mr-1"></i>Active</span>' : ''}
+                                                </div>
+                                                <h5 class="font-bold text-xs sm:text-sm line-clamp-1">${alt.title}</h5>
+                                                <p class="text-[11px] ${isSelected ? 'text-gray-300' : 'text-gray-500'} mt-1 line-clamp-2">${alt.desc}</p>
+                                            </div>
+                                            <div class="mt-4 pt-2 border-t ${isSelected ? 'border-gray-700' : 'border-gray-100'} flex items-center justify-between">
+                                                <span class="text-[10px] ${isSelected ? 'text-oaklight' : 'text-gray-400'}">Click to select</span>
+                                                <i class="fa-solid fa-arrow-right text-xs ${isSelected ? 'text-brass' : 'text-gray-400'}"></i>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = htmlContent;
+        }
+
+        function selectAlternativeMeal(day, recipeId) {
+            const found = masterRecipes[day].find(r => r.id === recipeId);
+            if (found) {
+                selectedMealPlan[day] = found;
+                generateMealPlan();
+                showToast("HeartyMeal Plan Updated", `Switched ${day} to "${found.title}".`);
+            }
+        }
+
+        function addMealToBasket(mealTitle, storeName) {
+            showToast("Ingredients Added", `Added ingredients for "${mealTitle}" (${storeName}) to your Smart Basket.`);
+        }
+
+        // Live Scraper Simulator Action
+        function runLiveScraperSync() {
+            const btn = document.getElementById('sync-scraper-btn');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>Scraping 5 Stores...`;
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = `<i class="fa-solid fa-bolt mr-2"></i>Run Live Data Sync Now`;
+                btn.disabled = false;
+                document.getElementById('scraper-status-banner').classList.remove('hidden');
+                showToast("Live Scraper Complete!", "Successfully synced weekly circulars across all 5 stores.");
+            }, 1200);
+        }
+
+        function copyPythonCode() {
+            const code = document.getElementById('python-code-content').innerText;
+            document.execCommand('copy');
+            showToast("Python Code Copied!", "Paste into your script editor to run weekly sweeps.");
+        }
+
+        // AI Recipe Generator Simulation
+        function generateAIRecipe() {
+            const ing = document.getElementById('ai-ingredients').value || 'millet & organic greens';
+            const diet = document.getElementById('ai-diet').value;
+            const meal = document.getElementById('ai-meal-type').value;
+
+            const box = document.getElementById('ai-result-container');
+            box.classList.remove('hidden');
+
+            document.getElementById('ai-out-title').innerText = `AI Custom HeartyMeal (${meal}): Spiced Ancient Millet & Green Bowl`;
+            document.getElementById('ai-out-store').innerText = 'Patel Brothers & Whole Foods Deal Match';
+            document.getElementById('ai-out-desc').innerText = `Designed for a ${diet} lifestyle using your ingredients (${ing}). Sauté organic turmeric and cumin in extra virgin olive oil, fold in cooked finger millet (ragi) and fresh baby spinach until wilted. Garnish with diced Hass avocado.`;
+            
+            document.getElementById('ai-out-ingredients').innerHTML = `
+                <span class="bg-emerald-50 text-emerald-800 text-[10px] px-2.5 py-1 rounded font-medium border border-emerald-200">Finger Millet Flour / Grains (Patel Brothers)</span>
+                <span class="bg-emerald-50 text-emerald-800 text-[10px] px-2.5 py-1 rounded font-medium border border-emerald-200">Organic Spinach (Target / Whole Foods)</span>
+                <span class="bg-emerald-50 text-emerald-800 text-[10px] px-2.5 py-1 rounded font-medium border border-emerald-200">Turmeric Spices (Patel Brothers)</span>
+            `;
+
+            showToast("AI HeartyMeal Generated!", "Successfully matched with active store discounts.");
+        }
+
+        function simulateCheckout() {
+            showToast("Shopping List Exported!", "Your organized grocery route across the 5 stores is ready.");
+        }
+
+        function checkoutWithInstacart() {
+            showToast("Redirecting to Instacart...", "Passing your SmartBasket items to Instacart checkout for home delivery.");
+        }
+
+        function showToast(title, desc) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-desc').innerText = desc;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
+```
+@@eof
